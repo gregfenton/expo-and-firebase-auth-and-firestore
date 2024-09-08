@@ -2,15 +2,15 @@
 
 This repository is an Expo/React-Native project that uses a simple, _reusable_ pattern for connecting to Firebase services and leveraging Firebase Authentication and Firestore for user registration, login, logout and "dynamically watching" user profile data in real-time.
 
-This project was created with `npx create-expo-app`.  It uses Expo Router for navigation, and Firebase for Auth and Firestore Database.
+This project was created with `npx create-expo-app`. It uses Expo Router for navigation, and Firebase for Auth and Firestore Database.
 
 NOTE: minimal time was spent on styling in order to focus on Firebase functionality, so the UI is extremely basic (ie: ugly).
 
-NOTE #2: This is a peer project to [react-and-firebase-auth-firestore](https://github.com/gregfenton/react-and-firebase-auth-and-firestore).  The goal is to have the two providers (`FirebaseProvider` and `AuthProvider`) be _nearly identical_ in both projects.
+NOTE #2: This is a peer project to [react-and-user-profiles-with-firebase-auth-and-firestore](https://github.com/gregfenton/react-and-user-profiles-with-firebase-auth-and-firestore). The goal is to have the two providers (`FirebaseProvider` and `AuthProvider`) be _nearly identical_ in both projects.
 
 ## &lt;FirebaseProvider /&gt;
 
-This component configures the app with your Firebase project's configuration information (the _firebaseConfig_), and gets the various Firebase services available for the rest of the app to use. The component uses React's Context API to make the services available.  The `firebaseConfig` is stored in a JSON file in the `src/providers` folder; details below.
+This component configures the app with your Firebase project's configuration information (the _firebaseConfig_), and gets the various Firebase services available for the rest of the app to use. The component uses React's Context API to make the services available. The `firebaseConfig` is stored in a JSON file in the `src/providers` folder; details below.
 
 ## &lt;AuthProvider /&gt;
 
@@ -18,8 +18,8 @@ This component uses the Firebase Auth service (it gets from the &lt;FirebaseProv
 
 ## To Run This Project
 
-1. `git clone https://github.com/gregfenton/expo-and-firebase-auth-and-firestore.git`
-1. `cd expo-and-firebase-auth-and-firestore`
+1. `git clone https://github.com/gregfenton/expo-and-user-profiles-with-firebase-auth-and-firestore.git`
+1. `cd expo-and-user-profiles-with-firebase-auth-and-firestore`
 1. `npm install expo@latest` to install Expo
 1. `npx expo install` to install the remaining NPM dependencies
 1. Open your favourite code editor (e.g. `code .` to run VSCode on this project)
@@ -48,7 +48,7 @@ You might also keep the "Welcome!" page showing and use Firebase Console >> Fire
 
 The main parts of this app that is _reusable_ are `FirebaseProvider` and `AuthProvider`, both located in `src/providers`.
 
-To use them, copy these two files into your Expo app, and somewhere near the top of your app's component tree "wrap" the parts of your app you want to use Firebase in with these two providers.  In this project, the wrapping happens in `app/(app)/_layout.tsx`:
+To use them, copy these two files into your Expo app, and somewhere near the top of your app's component tree "wrap" the parts of your app you want to use Firebase in with these two providers. In this project, the wrapping happens in `app/(app)/_layout.tsx`:
 
 ```js
 return (
