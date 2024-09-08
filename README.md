@@ -2,6 +2,11 @@
 
 This repository is an Expo/React-Native project that uses a simple, _reusable_ pattern for connecting to Firebase services and leveraging Firebase Authentication and Firestore for user registration, login, logout and "dynamically watching" user profile data in real-time.
 
+In this project we show:
+- [Firebase Authentication](https://firebase.google.com/docs/auth): register user, login and logout
+- [Firestore database](https://firebase.google.com/docs/firestore): for storing and retrieving "user profile" data with realtime updates
+- [Expo Router](https://docs.expo.dev/router/introduction/): for navigation and protected routes requiring a logged-in user
+
 This project was created with `npx create-expo-app`. It uses Expo Router for navigation, and Firebase for Auth and Firestore Database.
 
 NOTE: minimal time was spent on styling in order to focus on Firebase functionality, so the UI is extremely basic (ie: ugly).
