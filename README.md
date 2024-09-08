@@ -1,50 +1,68 @@
-# Welcome to your Expo app 👋
+# Simple Expo/React-Native App with Expo Router and User Profiles using Firebase Auth + Firestore
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This repository is an Expo/React-Native project that uses a simple, _reusable_ pattern for connecting to Firebase services and leveraging Firebase Authentication and Firestore for user registration, login, logout and "dynamically watching" user profile data in real-time.
 
-## Get started
+This project was created with `npx create-expo-app`.  It uses Expo Router for navigation, and Firebase for Auth and Firestore Database.
 
-1. Install dependencies
+NOTE: minimal time was spent on styling in order to focus on Firebase functionality, so the UI is extremely basic (ie: ugly).
 
-   ```bash
-   npm install
-   ```
+NOTE #2: This is a peer project to [react-and-firebase-auth-firestore](https://github.com/gregfenton/react-and-firebase-auth-and-firestore).  The goal is to have the two providers (`FirebaseProvider` and `AuthProvider`) be _nearly identical_ in both projects.
 
-2. Start the app
+## &lt;FirebaseProvider /&gt;
 
-   ```bash
-    npx expo start
-   ```
+This component configures the app with your Firebase project's configuration information (the _firebaseConfig_), and gets the various Firebase services available for the rest of the app to use. The component uses React's Context API to make the services available.  The `firebaseConfig` is stored in a JSON file in the `src/providers` folder; details below.
 
-In the output, you'll find options to open the app in a
+## &lt;AuthProvider /&gt;
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+This component uses the Firebase Auth service (it gets from the &lt;FirebaseProvider /&gt;) to enable the AuthStateChanged listener, makes available functions: `login()`, `logout()` and `register()`, upon successful registration stores "user profile" data to Firestore, and upon a successful login fetches the "user profile" data for the currently logged in user.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## To Run This Project
 
-## Get a fresh project
+1. `git clone https://github.com/gregfenton/expo-and-firebase-auth-and-firestore.git`
+1. `cd expo-and-firebase-auth-and-firestore`
+1. `npm install expo@latest` to install Expo
+1. `npx expo install` to install the remaining NPM dependencies
+1. Open your favourite code editor (e.g. `code .` to run VSCode on this project)
+1. Ensure your Firebase project has enabled the Email/Password sign-in provider:
+   - Firebase Console >> YOUR_PROJECT >> Authentication >> Sign-In Method
+   - If "Email/Password" is not listed under Sign-In Providers, click _Add New Provider_ and add it
+   - Ensure that Email/Password is _Enabled_
+1. Ensure your Firebase project has enabled the Firestore Database:
+   - Firebase Console >> YOUR_PROJECT >> Firestore Database
+   - if you see a _Create Database_ button, click it
+     - if prompted for Security Rules, choose to go with **_test mode_** for now
+1. Copy the file `providers/firebaseConfig.json.example` to `providers/firebaseConfig.json`
+1. Edit the file `providers/firebaseConfig.json` and replace the file's contents with your Firebase project's configuration (see initial contents of the JSON file for instructions)
+1. `npm run start` to start the Expo development server
+1. Once started, click `i` to start the iOS simulator, `a` to start the Android emulator, `w` to open the web browser, or `q` to quit the Expo CLI
 
-When you're ready, run:
+In the running app:
 
-```bash
-npm run reset-project
+1. If you have an existing account in your Firebase Authentication the enter the email, password and click the Login button.
+2. If you'd like to register a new account, click the Register button.
+3. Once logged in, you will be presented with the `displayName` and `email` values that are in Firestore >> `users` >> [the UID from Firebase Auth]
+
+You might also keep the "Welcome!" page showing and use Firebase Console >> Firestore to change the `displayName` of the user document. You will see the Expo app update its UI in real-time.
+
+## To Use This Project In Your Own Expo App
+
+The main parts of this app that is _reusable_ are `FirebaseProvider` and `AuthProvider`, both located in `src/providers`.
+
+To use them, copy these two files into your Expo app, and somewhere near the top of your app's component tree "wrap" the parts of your app you want to use Firebase in with these two providers.  In this project, the wrapping happens in `app/(app)/_layout.tsx`:
+
+```js
+return (
+  <FirebaseProvider>
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
+  </FirebaseProvider>
+);
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+where `<RootLayoutNav />` represents the rest of your app's Expo Router configuration.
 
-## Learn more
+Then in components `<RootLayoutNav />` or its descendants you can use the hooks:
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `useFirebaseContext()` to access the various handles to Firebase services: `myApp`, `myAuth`, `myFS`, `myStorage` and emulator settings `usingEmulators` and `emulatorsConfig`.
+- `useAuthContext()` to access the `login()`, `logout()` and `register()` functions, the `profile` object that contains the `displayName` and `email` values from the user's Firestore "user profile" document, and the `user` object from Firebase Auth that is set when the user login process completes successfully (i.e. it is set by the onAuthStateChanged() listener)
